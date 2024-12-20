@@ -4,7 +4,7 @@ import string
 
 # Функция для генерации ключа шифрования
 def generate_key(shift):
-    return shift % 26
+    return shift % 26 # берем 26-столько букв в английском алфавите
 
 # Функция для шифрования текста
 def encrypt(text, shift):
