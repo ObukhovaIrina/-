@@ -1,10 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import string
+#добавила новыую библиотеку
+from collections import Counter
+
 
 # Функция для генерации ключа шифрования
 def generate_key(shift):
-    return shift % 26 # берем 26-столько букв в английском алфавите
+    return shift % 26
+
 
 # Функция для шифрования текста
 def encrypt(text, shift):
@@ -25,17 +29,37 @@ def encrypt(text, shift):
             result += char  # Если символ не буква, оставляем его без изменений
     return result
 
+
 # Функция для дешифрования текста
 def decrypt(text, shift):
     return encrypt(text, -shift)  # Используем шифрование с отрицательным сдвигом для дешифрования
 
-# Функция для взлома шифрованного сообщения
-def brute_force_decrypt(text):
-    results = []
-    for shift in range(26):  # Перебираем все возможные сдвиги от 0 до 25
-        decrypted_text = decrypt(text, shift)
-        results.append(f"Сдвиг {shift}: {decrypted_text}")
-    return "\n".join(results)
+
+# Функция для частотного анализа
+def frequency_analysis(text):
+    frequencies = Counter(text.lower())
+    # Удаляем все символы, которые не являются буквами
+    for char in string.ascii_lowercase:
+        frequencies[char] = frequencies.get(char, 0)
+    # Вычисляем наиболее встречающуюся букву
+    return frequencies.most_common(1)[0][0]  # Возвращает наиболее частую букву
+
+
+# Также добавила функция для взлома шифрованного сообщения с частотным анализом
+def intelligent_decrypt(text, blocked_syllables):
+    most_frequent_char = frequency_analysis(text)
+    # Предполагаем, что наиболее часто встречающаяся буква шифра - это 'e' (это можно узнать в интернете)
+    assumed_shift = (ord(most_frequent_char) - ord('e')) % 26
+
+    decrypted_text = decrypt(text, assumed_shift)
+
+    # Проверяем на наличие заблокированных слогов
+    for syllable in blocked_syllables:
+        if syllable in decrypted_text:
+            return "Ошибка! Результат содержит заблокированные слоги."
+
+    return decrypted_text
+
 
 # Функции-обработчики для кнопок интерфейса
 def on_encrypt():
@@ -45,6 +69,7 @@ def on_encrypt():
     result_entry.delete("1.0", tk.END)
     result_entry.insert(tk.END, encrypted_text)
 
+
 def on_decrypt():
     text = text_entry.get("1.0", tk.END).strip()
     shift = int(shift_entry.get())
@@ -52,11 +77,14 @@ def on_decrypt():
     result_entry.delete("1.0", tk.END)
     result_entry.insert(tk.END, decrypted_text)
 
+
 def on_brute_force():
     text = text_entry.get("1.0", tk.END).strip()
-    brute_force_results = brute_force_decrypt(text)
+    blocked_syllables = ['аб', 'ав', 'ба', 'бо']  
     result_entry.delete("1.0", tk.END)
-    result_entry.insert(tk.END, brute_force_results)
+
+    decrypted_text = intelligent_decrypt(text, blocked_syllables)
+    result_entry.insert(tk.END, decrypted_text)
 
 
 root = tk.Tk()
