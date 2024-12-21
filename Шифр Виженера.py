@@ -7,7 +7,7 @@ alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 # Генерация ключа шифрования
 def generate_key():
-    length = random.randint(7, 15)  # Длина ключа от 7 до 15
+    length = random.randint(7, 15)  # Длина ключа 
     key = ''.join(random.choice(alphabet) for _ in range(length))
     return key
 
@@ -20,7 +20,7 @@ def contains_russian(text):
 # Шифровка
 def encrypt(input_text, key):
     if contains_russian(input_text):
-        messagebox.showerror("Ошибка", "Введите текст на английском языке!")
+        messagebox.showerror("Ошибка", "Введите на английском языке!")
         return ""
 
     input_text = input_text.upper()
@@ -34,7 +34,7 @@ def encrypt(input_text, key):
 # Дешифровка
 def decrypt(input_text, key):
     if contains_russian(input_text):
-        messagebox.showerror("Ошибка", "Введите текст на английском языке!")
+        messagebox.showerror("Ошибка", "Введите на английском языке!")
         return ""
 
     input_text = input_text.upper()
@@ -59,7 +59,7 @@ def process_vigenere(text, key, is_encrypt):
 
         key_index_value = alphabet.find(key[key_index % len(key)])  # Получаем индекс символа ключа
         if is_encrypt:
-            new_index = (text_index + key_index_value) % len(alphabet)  # Шифрование
+            new_index = (text_index + key_index_value) % len(alphabet)  
         else:
             new_index = (text_index - key_index_value + len(alphabet)) % len(alphabet)  # Дешифрование
 
